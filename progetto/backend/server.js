@@ -26,4 +26,16 @@ app.get("/aziende/:id", (req, res) => {
     
 })
 
+app.get("/aziende/origine/:origine",(req, res)=>{
+const {origine}= req.params;
+const origini= database.filter((x)=> x.origine.toLowerCase().trim() === origine.toLowerCase().trim() );
+if(origini.length > 0){
+    res.json(origini);
+}else{
+    res.status(404).json({error: "Nessun risultato trovato"});
+}
+}
+
+)
+
 app.listen(PORT, () => console.log(`Il server è attivo su http://localhost:${PORT}`))
