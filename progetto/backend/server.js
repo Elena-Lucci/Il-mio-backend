@@ -38,4 +38,16 @@ if(origini.length > 0){
 
 )
 
+app.get ("/disponibili", (req, res) => {
+    const aziendeFiltrate = database.filter((x) => {const verifica = x.prodotti.some((y) => y.disponibilita) 
+        console.log (verifica)
+        return verifica
+    })
+    if(aziendeFiltrate.length > 0){
+        res.json(aziendeFiltrate);
+    }else{
+        res.status(404).json({error: "Nessun risultato trovato"});
+    }
+})
+
 app.listen(PORT, () => console.log(`Il server è attivo su http://localhost:${PORT}`))
