@@ -3,6 +3,7 @@ import database from "./db.js";
 
 const app = express();
 const PORT = 3000;
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Il server è attivo");
@@ -80,6 +81,24 @@ app.get("/gusti", (req, res) => {
 });
 
 // creare una richiesta post che in base all'id passato come params aggiunge all'azienda corrispondente un nuovo prodotto con tutte le chiavi obbligatorie
+
+app.post("/aziende/:id", (req, res) => {
+    const {id} = req.params;
+    const {categoria, gusti, disponibilita} = req.body;
+    const nuovoProdotto = {
+        categoria: categoria,
+        gusti: gusti,
+        disponibilita: disponibilita,
+        numeroGusti: gusti.length
+    }
+    const aziendaAggiornata = database.find((x) => x.id === parseInt(id));
+    if(aziendaAggiornata) { 
+        aziendaAggiornata.prodotti.push(nuovoProdotto)
+        res.status(201).json({message: "Prodotto aggiunto con successo"});
+    } else {
+        res.status(404).json({ error: "Nessuna azienda trovata" });
+    }
+})
 
 
 
