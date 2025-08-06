@@ -53,11 +53,13 @@ app.get("/disponibili", (req, res) => {
 // richiesta get che restituisca tramite req.query tutte le aziende che producano il gusto di gelato, categoria gelato, che ho indicato nelle query. Se non e' presente restituisce tutte le aziende.
 
 app.get("/gusti", (req, res) => {
-  const { gusto } = req.query;
-  if (gusto) {
+  const { gusto, categoria } = req.query;
+  if (gusto && categoria) {
     const aziendeGelato = database.filter((x) =>
       x.prodotti.some(
-        (y) => y.categoria === "gelato" && y.gusti.includes(gusto.toLowerCase())
+        (y) =>
+          y.categoria === categoria.toLowerCase() &&
+          y.gusti.includes(gusto.toLowerCase())
       )
     );
     if (aziendeGelato.length > 0) {
