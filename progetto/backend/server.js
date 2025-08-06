@@ -52,23 +52,28 @@ app.get("/disponibili", (req, res) => {
 
 // richiesta get che restituisca tramite req.query tutte le aziende che producano il gusto di gelato, categoria gelato, che ho indicato nelle query. Se non e' presente restituisce tutte le aziende.
 
+//
+
 app.get("/gusti", (req, res) => {
-  const { gusto, categoria } = req.query;
-  if (gusto && categoria) {
-    const aziendeGelato = database.filter((x) =>
-      x.prodotti.some(
-        (y) =>
-          y.categoria === categoria.toLowerCase() &&
-          y.gusti.includes(gusto.toLowerCase())
-      )
-    );
-    if (aziendeGelato.length > 0) {
-      res.json(aziendeGelato);
-    } else {
-      res.status(404).json({ error: "Nessun gusto trovato" });
-    }
+  const { gusto, categorie } = req.query;
+
+  const aziendeGelato = database.filter(({ prodotti }) =>
+    prodotti.some(({ categoria, gusti }) =>
+      gusto && categorie
+        ? categoria === categorie.toLowerCase() &&
+          gusti.includes(gusto.toLowerCase())
+        : categorie
+        ? categoria === categorie.toLowerCase()
+        : gusto
+        ? gusti.includes(gusto.toLowerCase())
+        : categoria
+    )
+  );
+
+  if (aziendeGelato.length > 0) {
+    res.json(aziendeGelato);
   } else {
-    res.json(database);
+    res.status(404).json({ error: "Nessun gusto trovato" });
   }
 });
 
