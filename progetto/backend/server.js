@@ -55,6 +55,8 @@ app.get("/disponibili", (req, res) => {
 //
 
 app.get("/gusti", (req, res) => {
+  // rendere dinamici i query params
+
   const { gusto, categorie } = req.query;
 
   const aziendeGelato = database.filter(({ prodotti }) =>
@@ -76,6 +78,10 @@ app.get("/gusti", (req, res) => {
     res.status(404).json({ error: "Nessun gusto trovato" });
   }
 });
+
+// creare una richiesta post che in base all'id passato come params aggiunge all'azienda corrispondente un nuovo prodotto con tutte le chiavi obbligatorie
+
+
 
 app.listen(PORT, () =>
   console.log(`Il server è attivo su http://localhost:${PORT}`)
