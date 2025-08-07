@@ -1,9 +1,12 @@
 import express from "express";
 import database from "./db.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
 app.use(express.json());
+//disabilito la policy cors da tutte le nostre richieste con questo comando:
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Il server è attivo");
@@ -150,7 +153,7 @@ app.put("/aziende/:id/:nomeProdotto", (req, res) => {
       prodotto.gusti = gusti? [...prodotto.gusti, ...gusti] : prodotto.gusti;
 
       //FIXARE GUSTI DUPLICATI
-      
+
       prodotto.disponibilita = disponibilita || prodotto.disponibilita;
       prodotto.numeroGusti = prodotto.gusti.length;
       res.status(202).json({ message: "Prodotto aggiornato con successo" })
@@ -162,6 +165,17 @@ app.put("/aziende/:id/:nomeProdotto", (req, res) => {
   }
 });
 
+app.delete("/aziende/:id", (req, res)=> {
+  const { id } = req.params;
+  const azienda = database.find((x) => x.id === parseInt(id));
+  if(azienda) {
+    const index = database.indexOf(azienda);
+    database.splice(index, 1);
+    res.json({message: "Azienda eliminata"});
+  } else {
+     res.status(404).json({ error: "Nessuna azienda trovata" });
+  }
+})
 
 app.listen(PORT, () =>
   console.log(`Il server è attivo su http://localhost:${PORT}`)
