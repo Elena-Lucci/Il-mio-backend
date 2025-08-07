@@ -83,24 +83,39 @@ app.get("/gusti", (req, res) => {
 // creare una richiesta post che in base all'id passato come params aggiunge all'azienda corrispondente un nuovo prodotto con tutte le chiavi obbligatorie
 
 app.post("/aziende/:id", (req, res) => {
-    const {id} = req.params;
-    const {categoria, gusti, disponibilita} = req.body;
-    const nuovoProdotto = {
-        categoria: categoria,
-        gusti: gusti,
-        disponibilita: disponibilita,
-        numeroGusti: gusti.length
-    }
-    const aziendaAggiornata = database.find((x) => x.id === parseInt(id));
-    if(aziendaAggiornata) { 
-        aziendaAggiornata.prodotti.push(nuovoProdotto)
-        res.status(201).json({message: "Prodotto aggiunto con successo"});
-    } else {
-        res.status(404).json({ error: "Nessuna azienda trovata" });
-    }
-})
+  const { id } = req.params;
+  const { categoria, gusti, disponibilita } = req.body;
+  const nuovoProdotto = {
+    categoria: categoria,
+    gusti: gusti,
+    disponibilita: disponibilita,
+    numeroGusti: gusti.length,
+  };
+  const aziendaAggiornata = database.find((x) => x.id === parseInt(id));
+  if (aziendaAggiornata) {
+    aziendaAggiornata.prodotti.push(nuovoProdotto);
+    res.status(201).json({ message: "Prodotto aggiunto con successo" });
+  } else {
+    res.status(404).json({ error: "Nessuna azienda trovata" });
+  }
+});
 
+// richiesta PUT che ci permette di andare ad aggiornare i dati della nostra azienda: nome origine, anno fondazione. Sempre req.params (id).
 
+app.put("/aziende/:id", (req, res) => {
+  const { id } = req.params;
+  const { nome, origine, annoFondazione, distribuzione } = req.body;
+  const azienda = database.find((x) => x.id === parseInt(id));
+  if (azienda) {
+    azienda.nome = nome || azienda.nome;
+    azienda.origine = origine || azienda.origine;
+    azienda.annoFondazione = annoFondazione || azienda.annoFondazione;
+    azienda.distribuzione = distribuzione || azienda.distribuzione;
+    res.status(202).json({ message: "Azienda aggiornata con successo" });
+  } else {
+    res.status(404).json({ error: "Nessuna azienda trovata" });
+  }
+});
 
 app.listen(PORT, () =>
   console.log(`Il server è attivo su http://localhost:${PORT}`)
