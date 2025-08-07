@@ -117,6 +117,52 @@ app.put("/aziende/:id", (req, res) => {
   }
 });
 
+//richiesta di tipo PUT che ad una determinata azienda, selezionata tramite id (params) venga modificato un determinato prodotto, preso con name tramite params, di cui modifichiamo le varie chiavi all'interno.
+// app.put("/aziende/:id/:nomeProdotto", (req, res) => {
+//   const { id, nomeProdotto } = req.params;
+//   const {categoria, gusti, disponibilita} = req.body;
+//   const azienda = database.find((x) => x.id === parseInt(id));
+//   if (azienda) {
+//     const prodotto = azienda.prodotti.find((x) => x.categoria.toLowerCase() === nomeProdotto.toLowerCase());
+//     if(prodotto) {
+//       prodotto.categoria = categoria || prodotto.categoria;
+//       prodotto.gusti = gusti || prodotto.gusti;
+//       prodotto.disponibilita = disponibilita || prodotto.disponibilita;
+//       prodotto.numeroGusti = prodotto.gusti.length;
+//       res.status(202).json({ message: "Prodotto aggiornato con successo"})
+//     } else {
+//       res.status(404).json({ error: "Prodotto non trovato" });
+//     }
+//   } else {
+//     res.status(404).json({ error: "Nessuna azienda trovata" });
+//   }
+// });
+
+app.put("/aziende/:id/:nomeProdotto", (req, res) => {
+  const { id, nomeProdotto } = req.params;
+  const {categoria, gusti, disponibilita} = req.body;
+  const azienda = database.find((x) => x.id === parseInt(id));
+  if (azienda) {
+    const prodotto = azienda.prodotti.find((x) => x.categoria.toLowerCase() === nomeProdotto.toLowerCase());
+    if(prodotto) {
+      const alreadyExist = azienda.prodotti.some((x) => x.categoria.toLowerCase() === categoria.toLowerCase());
+      if (!alreadyExist) {
+      prodotto.categoria = categoria || prodotto.categoria;
+      prodotto.gusti = gusti || prodotto.gusti;
+      prodotto.disponibilita = disponibilita || prodotto.disponibilita;
+      prodotto.numeroGusti = prodotto.gusti.length;
+      res.status(202).json({ message: "Prodotto aggiornato con successo"})} else {
+       
+      }
+    } else {
+      res.status(404).json({ error: "Prodotto non trovato" });
+    }
+  } else {
+    res.status(404).json({ error: "Nessuna azienda trovata" });
+  }
+});
+
+
 app.listen(PORT, () =>
   console.log(`Il server è attivo su http://localhost:${PORT}`)
 );
