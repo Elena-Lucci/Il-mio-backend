@@ -146,14 +146,14 @@ app.put("/aziende/:id/:nomeProdotto", (req, res) => {
     const prodotto = azienda.prodotti.find((x) => x.categoria.toLowerCase() === nomeProdotto.toLowerCase());
     if(prodotto) {
       const alreadyExist = azienda.prodotti.some((x) => x.categoria.toLowerCase() === categoria.toLowerCase());
-      if (!alreadyExist) {
-      prodotto.categoria = categoria || prodotto.categoria;
-      prodotto.gusti = gusti || prodotto.gusti;
+      prodotto.categoria = alreadyExist? prodotto.categoria : categoria;
+      prodotto.gusti = gusti? [...prodotto.gusti, ...gusti] : prodotto.gusti;
+
+      //FIXARE GUSTI DUPLICATI
+      
       prodotto.disponibilita = disponibilita || prodotto.disponibilita;
       prodotto.numeroGusti = prodotto.gusti.length;
-      res.status(202).json({ message: "Prodotto aggiornato con successo"})} else {
-       
-      }
+      res.status(202).json({ message: "Prodotto aggiornato con successo" })
     } else {
       res.status(404).json({ error: "Prodotto non trovato" });
     }
